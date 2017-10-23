@@ -21,6 +21,7 @@ module Paperclip
         :interpolator          => Paperclip::Interpolations,
         :only_process          => [],
         :path                  => ":rails_root/public:url",
+        :preserve_attributes   => false,
         :preserve_files        => false,
         :processors            => [:thumbnail],
         :source_file_options   => {},
@@ -557,12 +558,14 @@ module Paperclip
           path(style) if exists?(style)
         end.compact
       end
-      instance_write(:file_name, nil)
-      instance_write(:content_type, nil)
-      instance_write(:file_size, nil)
-      instance_write(:fingerprint, nil)
-      instance_write(:created_at, nil) if has_enabled_but_unset_created_at?
-      instance_write(:updated_at, nil)
+      unless @options[:preserve_attributes]
+        instance_write(:file_name, nil)
+        instance_write(:content_type, nil)
+        instance_write(:file_size, nil)
+        instance_write(:fingerprint, nil)
+        instance_write(:created_at, nil) if has_enabled_but_unset_created_at?
+        instance_write(:updated_at, nil)
+      end
     end
 
     def flush_errors #:nodoc:
