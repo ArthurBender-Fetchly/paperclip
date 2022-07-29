@@ -149,6 +149,15 @@ module Paperclip
 
         base.instance_eval do
           @s3_options     = @options[:s3_options]     || {}
+
+          if @options[:s3_wiredump]
+            msg = "================ adding S3 wiredump..."
+            puts msg
+            Rails.logger.debug { msg }
+
+            @s3_options[:client] = Aws::S3::Client.new(http_wire_trace: true)
+          end
+
           @s3_permissions = set_permissions(@options[:s3_permissions])
           @s3_protocol    = @options[:s3_protocol]    ||
             Proc.new do |style, attachment|
